@@ -55,8 +55,10 @@
             <mat-spinner diameter="20" class="spinner-inline"></mat-spinner>
             Optimisation en cours...
           } @else {
-            <mat-icon>auto_awesome</mat-icon>
-            Lancer l optimisation
+            <ng-container>
+              <mat-icon>auto_awesome</mat-icon>
+              Lancer l optimisation
+            </ng-container>
           }
         </button>
       </div>
