@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Gestionnaire global des exceptions — traduit les exceptions métier en réponses HTTP structurées.
@@ -84,6 +85,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 ApiError.of(401, "Non autorisé", "Authentification requise", request.getRequestURI()));
+    }
+
+    // -------------------------------------------------------------------------
+    // 404 — Ressource introuvable
+    // -------------------------------------------------------------------------
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiError> handleNotFound(
+            NoSuchElementException ex, HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiError.of(404, "Introuvable", ex.getMessage(), request.getRequestURI()));
     }
 
     // -------------------------------------------------------------------------
