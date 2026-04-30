@@ -1,0 +1,61 @@
+﻿.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.8rem;
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    color: #666;
+    margin: 0;
+  }
+}
+
+.form-card {
+  margin-bottom: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.action-row {
+  margin-top: 24px;
+  text-align: center;
+
+  button {
+    padding: 8px 32px;
+    font-size: 1rem;
+  }
+}
+
+.spinner-inline {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.info-card {
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    margin-bottom: 12px;
+  }
+
+  ol li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+}

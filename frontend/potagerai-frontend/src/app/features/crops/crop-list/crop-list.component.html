@@ -1,0 +1,59 @@
+﻿<div class="page-header">
+  <h1>
+    <mat-icon>grass</mat-icon>
+    Cultures disponibles
+  </h1>
+  <p class="subtitle">{{ crops.length }} cultures referencees pour la France (Phase 1).</p>
+</div>
+
+@if (loading) {
+  <div class="loading-center">
+    <mat-spinner></mat-spinner>
+  </div>
+}
+
+<div class="crop-grid">
+  @for (crop of crops; track crop.id) {
+    <mat-card class="crop-card">
+      <mat-card-header>
+        <mat-card-title>{{ crop.commonName }}</mat-card-title>
+        <mat-card-subtitle>{{ crop.scientificName }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        @if (crop.nutritionalProfile) {
+          <div
+            class="andi-badge"
+            [style.background]="andiColor(crop.nutritionalProfile.andiScore)"
+            [matTooltip]="'Score ANDI - densite nutritionnelle'"
+          >
+            ANDI {{ crop.nutritionalProfile.andiScore | number:"1.0-0" }}
+          </div>
+          <div class="nutrient-grid">
+            <div class="nutrient-item">
+              <span class="label">Energie</span>
+              <span class="value">{{ crop.nutritionalProfile.caloriesPer100g | number:"1.0-0" }} kcal</span>
+            </div>
+            <div class="nutrient-item">
+              <span class="label">Proteines</span>
+              <span class="value">{{ crop.nutritionalProfile.proteinsPer100g | number:"1.1-1" }} g</span>
+            </div>
+            <div class="nutrient-item">
+              <span class="label">Glucides</span>
+              <span class="value">{{ crop.nutritionalProfile.carbsPer100g | number:"1.1-1" }} g</span>
+            </div>
+            <div class="nutrient-item">
+              <span class="label">Lipides</span>
+              <span class="value">{{ crop.nutritionalProfile.fatsPer100g | number:"1.1-1" }} g</span>
+            </div>
+            <div class="nutrient-item">
+              <span class="label">Fibres</span>
+              <span class="value">{{ crop.nutritionalProfile.fiberPer100g | number:"1.1-1" }} g</span>
+            </div>
+          </div>
+        } @else {
+          <p class="no-profile">Profil nutritionnel non disponible.</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,20 @@
+﻿<mat-toolbar color="primary">
+  <mat-icon>eco</mat-icon>
+  <span class="brand">PotagerAI</span>
+  <span class="spacer"></span>
+  @if (authService.isAuthenticated()) {
+    <button mat-button routerLink="/garden">
+      <mat-icon>yard</mat-icon> Mon Jardin
+    </button>
+    <button mat-button routerLink="/crops">
+      <mat-icon>grass</mat-icon> Cultures
+    </button>
+    <button mat-icon-button (click)="logout()" title="Deconnexion">
+      <mat-icon>logout</mat-icon>
+    </button>
+  }
+</mat-toolbar>
+
+<main class="app-main">
+  <router-outlet />
+</main>

@@ -1,0 +1,68 @@
+﻿.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.8rem;
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    color: #666;
+    margin: 0;
+  }
+}
+
+.loading-center {
+  text-align: center;
+  padding: 48px;
+}
+
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.crop-card {
+  .andi-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    cursor: default;
+  }
+
+  .nutrient-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 8px;
+  }
+
+  .nutrient-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    .label {
+      color: #888;
+      font-size: 0.8rem;
+    }
+
+    .value {
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+  }
+
+  .no-profile {
+    color: #999;
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+}

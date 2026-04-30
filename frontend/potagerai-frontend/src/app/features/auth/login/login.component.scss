@@ -1,0 +1,32 @@
+﻿.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 16px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.submit-btn {
+  margin-top: 8px;
+}
+
+.spinner-inline {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.card-actions {
+  padding: 0 16px 16px;
+  text-align: center;
+}

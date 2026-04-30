@@ -1,0 +1,94 @@
+﻿<div class="page-header">
+  <button mat-icon-button routerLink="/garden">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1>Plan d optimisation</h1>
+</div>
+
+@if (loading) {
+  <div class="loading-center">
+    <mat-spinner></mat-spinner>
+    <p>Chargement du resultat...</p>
+  </div>
+}
+
+@if (result) {
+  <div class="kpi-grid">
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-value">{{ result.selfSufficiencyPercent | number:"1.0-1" }}%</div>
+        <div class="kpi-label">Auto-suffisance calorique</div>
+        <mat-progress-bar mode="determinate" [value]="result.selfSufficiencyPercent" color="primary"></mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-value">{{ result.totalCaloriesProduced | number:"1.0-0" }}</div>
+        <div class="kpi-label">kcal/an produits</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-value">{{ result.plotAllocations.length }}</div>
+        <div class="kpi-label">cultures selectionnees</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-value">{{ getTotalSurface() | number:"1.0-1" }} m2</div>
+        <div class="kpi-label">surface allouee</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="treemap-card">
+    <mat-card-header>
+      <mat-card-title>Plan de jardin - repartition des surfaces</mat-card-title>
+      <mat-card-subtitle>Taille proportionnelle a la surface allouee - Couleur = score ANDI</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <svg #treemap class="treemap-svg"></svg>
+      <div class="legend">
+        <span class="legend-label">Faible ANDI</span>
+        <span class="legend-gradient"></span>
+        <span class="legend-label">ANDI eleve</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Detail par culture</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="table-wrapper">
+        <table class="alloc-table">
+          <thead>
+            <tr>
+              <th>Culture</th>
+              <th>Surface (m2)</th>
+              <th>% du jardin</th>
+              <th>kcal/an estimes</th>
+              <th>Score ANDI</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of result.plotAllocations; track a.cropId) {
+              <tr>
+                <td><strong>{{ a.cropName }}</strong></td>
+                <td>{{ a.allocatedSurfaceM2 | number:"1.1-1" }}</td>
+                <td>{{ getSurfacePercent(a) | number:"1.0-1" }}%</td>
+                <td>{{ a.estimatedCalories | number:"1.0-0" }}</td>
+                <td>
+                  <span class="andi-chip" [style.background]="andiColora.andiScore">
+                    {{ a.andiScore | number:"1.0-0" }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+}

@@ -1,0 +1,80 @@
+﻿<div class="page-header">
+  <h1>
+    <mat-icon>yard</mat-icon>
+    Optimiser mon potager
+  </h1>
+  <p class="subtitle">Entrez les caracteristiques de votre jardin pour obtenir un plan d allocation optimise.</p>
+</div>
+
+<mat-card class="form-card">
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Surface totale (m2)</mat-label>
+          <input matInput type="number" formControlName="totalSurfaceM2" min="1" />
+          <mat-hint>Surface cultivable disponible</mat-hint>
+          @if (form.get("totalSurfaceM2")?.hasError("required") && form.get("totalSurfaceM2")?.touched) {
+            <mat-error>Surface requise</mat-error>
+          }
+          @if (form.get("totalSurfaceM2")?.hasError("min") && form.get("totalSurfaceM2")?.touched) {
+            <mat-error>Minimum 1 m2</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre de personnes</mat-label>
+          <input matInput type="number" formControlName="householdSize" min="1" max="20" />
+          <mat-hint>Membres du foyer a nourrir</mat-hint>
+          @if (form.get("householdSize")?.hasError("required") && form.get("householdSize")?.touched) {
+            <mat-error>Requis</mat-error>
+          }
+          @if (form.get("householdSize")?.hasError("min") && form.get("householdSize")?.touched) {
+            <mat-error>Minimum 1 personne</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Zone climatique</mat-label>
+          <mat-select formControlName="climateZoneCode">
+            @for (zone of climateZones; track zone.code) {
+              <mat-option [value]="zone.code">{{ zone.code }} - {{ zone.label }}</mat-option>
+            }
+          </mat-select>
+          @if (form.get("climateZoneCode")?.hasError("required") && form.get("climateZoneCode")?.touched) {
+            <mat-error>Zone requise</mat-error>
+          }
+        </mat-form-field>
+
+      </div>
+
+      <div class="action-row">
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+          @if (loading) {
+            <mat-spinner diameter="20" class="spinner-inline"></mat-spinner>
+            Optimisation en cours...
+          } @else {
+            <mat-icon>auto_awesome</mat-icon>
+            Lancer l optimisation
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="info-card">
+  <mat-card-content>
+    <h3>
+      <mat-icon>info</mat-icon>
+      Comment ca marche ?
+    </h3>
+    <ol>
+      <li>L algorithme calcule l allocation optimale de surface par culture</li>
+      <li>Objectif : maximiser la densite calorique tout en couvrant vos besoins (2500 kcal/pers/jour)</li>
+      <li>Contrainte : aucune culture ne peut occuper plus de 30% de la surface</li>
+      <li>Les rendements sont ajustes selon votre zone climatique</li>
+    </ol>
+  </mat-card-content>
+</mat-card>

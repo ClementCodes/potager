@@ -1,0 +1,29 @@
+/* PotagerAI — Global Styles */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #f9fbe7;
+  color: #212121;
+}
+
+/* Material overrides */
+.mat-mdc-card {
+  border-radius: 12px !important;
+}
+
+/* Snackbar error */
+.snack-error .mdc-snackbar__surface {
+  background: #c62828 !important;
+}
+
+/* Global link style */
+a {
+  color: #2e7d32;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+/* Responsive utility */
+.full-width { width: 100%; }
