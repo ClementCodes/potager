@@ -78,7 +78,7 @@
                 <div class="plot-strip-info">
                   <strong>{{ a.cropName }}</strong>
                   <span class="plot-strip-meta">
-                    {{ layout.total | number }} plants · {{ a.allocatedSurfaceM2 | number:"1.0-1" }} m²
+                    {{ layout.total | number }} pieds · {{ a.allocatedSurfaceM2 | number:"1.0-1" }} m²
                   </span>
                 </div>
               </div>
@@ -157,7 +157,8 @@
               <div class="plants-highlight">
                 <mat-icon>grass</mat-icon>
                 <div class="plants-text">
-                  À planter : <strong>{{ nb }} {{ a.cropName | lowercase }}s</strong>
+                  À planter : <strong>{{ nb }} pied{{ nb > 1 ? 's' : '' }} de {{ a.cropName | lowercase }}</strong>
+                  <span class="plants-note">(chaque pied produit plusieurs {{ a.cropName | lowercase }}s)</span>
                 </div>
               </div>
             }

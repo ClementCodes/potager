@@ -320,8 +320,18 @@
         font-size: 0.85rem;
         color: #2e7d32;
         font-weight: 500;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
 
         strong { font-size: 1rem; }
+
+        .plants-note {
+          font-size: 0.72rem;
+          font-weight: 400;
+          color: #558b2f;
+          font-style: italic;
+        }
       }
     }
   }
