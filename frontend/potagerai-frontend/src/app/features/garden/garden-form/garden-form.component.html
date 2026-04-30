@@ -39,7 +39,7 @@
           <mat-label>Zone climatique</mat-label>
           <mat-select formControlName="climateZoneCode">
             @for (zone of climateZones; track zone.code) {
-              <mat-option [value]="zone.code">{{ zone.code }} - {{ zone.label }}</mat-option>
+              <mat-option [value]="zone.code">{{ zone.name }} (×{{ zone.yieldMultiplier }})</mat-option>
             }
           </mat-select>
           @if (form.get("climateZoneCode")?.hasError("required") && form.get("climateZoneCode")?.touched) {

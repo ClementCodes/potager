@@ -1,4 +1,4 @@
-﻿import { Component, inject } from "@angular/core";
+﻿import { Component, inject, OnInit } from "@angular/core";
 import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
@@ -10,6 +10,8 @@ import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatIconModule } from "@angular/material/icon";
 import { GardenService } from "../../../core/services/garden.service";
+import { ClimateZoneService } from "../../../core/services/climate-zone.service";
+import { ClimateZone } from "../../../core/models/climate-zone.model";
 import { CreateGardenRequest } from "../../../core/models/garden.model";
 
 @Component({
@@ -23,18 +25,14 @@ import { CreateGardenRequest } from "../../../core/models/garden.model";
   templateUrl: "./garden-form.component.html",
   styleUrl: "./garden-form.component.scss"
 })
-export class GardenFormComponent {
+export class GardenFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private gardenService = inject(GardenService);
+  private climateZoneService = inject(ClimateZoneService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  climateZones = [
-    { code: "FR-OCC", label: "Occitanie (x1.00)" },
-    { code: "FR-CON", label: "Continental (x0.85)" },
-    { code: "FR-MED", label: "Mediterraneen (x1.20)" },
-    { code: "FR-MON", label: "Montagnard (x0.65)" }
-  ];
+  climateZones: ClimateZone[] = [];
 
   form = this.fb.group({
     totalSurfaceM2: [null as number | null, [Validators.required, Validators.min(1)]],
@@ -43,6 +41,13 @@ export class GardenFormComponent {
   });
 
   loading = false;
+
+  ngOnInit(): void {
+    this.climateZoneService.findAll().subscribe({
+      next: (zones) => (this.climateZones = zones),
+      error: () => this.snackBar.open("Impossible de charger les zones climatiques", "Fermer", { duration: 4000 })
+    });
+  }
 
   onSubmit(): void {
     if (this.form.invalid) return;
@@ -58,7 +63,7 @@ export class GardenFormComponent {
     this.gardenService.create(req).subscribe({
       next: (garden) => {
         this.gardenService.optimize(garden.id).subscribe({
-          next: (result) => this.router.navigate(["/garden", result.id, "result"]),
+          next: () => this.router.navigate(["/garden", garden.id, "result"]),
           error: (err) => {
             this.loading = false;
             if (err.status === 422) {

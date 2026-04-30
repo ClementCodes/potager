@@ -12,6 +12,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Endpoints d'optimisation LP.
  *
@@ -46,5 +48,31 @@ public class OptimizationController {
 
         OptimizationResultDto result = gardenOptimizerService.optimize(id, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @Operation(
+        summary = "Récupérer la dernière optimisation",
+        description = "Retourne le dernier plan d'optimisation calculé pour ce jardin sans en relancer un nouveau. HTTP 404 si aucune optimisation n'existe."
+    )
+    @GetMapping("/{id}/optimization")
+    public ResponseEntity<OptimizationResultDto> findLatest(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        return gardenOptimizerService.findLatest(id, userDetails.getUsername())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(
+        summary = "Historique des optimisations",
+        description = "Retourne toutes les optimisations calculées pour ce jardin, triées de la plus récente à la plus ancienne."
+    )
+    @GetMapping("/{id}/optimizations")
+    public ResponseEntity<List<OptimizationResultDto>> findAll(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        return ResponseEntity.ok(gardenOptimizerService.findAll(id, userDetails.getUsername()));
     }
 }

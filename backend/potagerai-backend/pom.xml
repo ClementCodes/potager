@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <!-- test + profil dev-h2 (sans Docker) -->
         </dependency>
 
     </dependencies>

@@ -32,13 +32,29 @@ export class GardenResultComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get("id"));
-    this.gardenService.optimize(id).subscribe({
+    // L'id de la route est l'id du JARDIN (pas de l'OptimizationResult).
+    // On tente d'abord de récupérer le dernier résultat persisté (GET), et on
+    // ne relance une optimisation (POST) qu'en dernier recours (404).
+    this.gardenService.getLatestOptimization(id).subscribe({
       next: (r) => {
         this.result = r;
         this.loading = false;
         setTimeout(() => this.renderTreemap(), 100);
       },
-      error: () => { this.loading = false; }
+      error: (err) => {
+        if (err?.status === 404) {
+          this.gardenService.optimize(id).subscribe({
+            next: (r) => {
+              this.result = r;
+              this.loading = false;
+              setTimeout(() => this.renderTreemap(), 100);
+            },
+            error: () => { this.loading = false; }
+          });
+        } else {
+          this.loading = false;
+        }
+      }
     });
   }
 

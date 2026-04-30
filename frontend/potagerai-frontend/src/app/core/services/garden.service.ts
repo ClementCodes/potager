@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { GardenProfile, CreateGardenRequest } from '../models/garden.model';
@@ -7,9 +7,8 @@ import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class GardenService {
+  private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/gardens`;
-
-  constructor(private http: HttpClient) {}
 
   create(request: CreateGardenRequest): Observable<GardenProfile> {
     return this.http.post<GardenProfile>(this.baseUrl, request);
@@ -25,5 +24,10 @@ export class GardenService {
 
   optimize(id: number): Observable<OptimizationResult> {
     return this.http.post<OptimizationResult>(`${this.baseUrl}/${id}/optimize`, {});
+  }
+
+  /** Récupère le dernier résultat d'optimisation persisté pour un jardin (sans recalcul). */
+  getLatestOptimization(gardenId: number): Observable<OptimizationResult> {
+    return this.http.get<OptimizationResult>(`${this.baseUrl}/${gardenId}/optimization`);
   }
 }

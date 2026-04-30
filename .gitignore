@@ -31,3 +31,8 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Bases de données H2 locales (profil dev-h2)
+*.mv.db
+*.trace.db
+backend/potagerai-backend/potagerai-dev*

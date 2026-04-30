@@ -31,7 +31,7 @@ describe('AuthService', () => {
   });
 
   it('isAuthenticated() retourne true après stockage d un token', () => {
-    localStorage.setItem('jwt_token', 'fake.token.here');
+    localStorage.setItem('token', 'fake.token.here');
     expect(service.isAuthenticated()).toBeTrue();
   });
 
@@ -40,9 +40,9 @@ describe('AuthService', () => {
   });
 
   it('logout() supprime le token du localStorage', () => {
-    localStorage.setItem('jwt_token', 'fake.token.here');
+    localStorage.setItem('token', 'fake.token.here');
     service.logout();
-    expect(localStorage.getItem('jwt_token')).toBeNull();
+    expect(localStorage.getItem('token')).toBeNull();
     expect(service.isAuthenticated()).toBeFalse();
   });
 

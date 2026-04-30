@@ -51,6 +51,8 @@ public class SecurityConfig {
                         // Endpoints publics
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        // Zones climatiques — publiques (nécessaires pour le formulaire de création)
+                        .requestMatchers(HttpMethod.GET, "/api/climate-zones").permitAll()
                         // Swagger UI (désactivé en prod via properties)
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**").permitAll()
                         // Actuator health check

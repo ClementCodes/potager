@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Cœur algorithmique de PotagerAI.
@@ -139,6 +140,55 @@ public class GardenOptimizerService {
 
         log.info("Optimisation réussie : auto-suffisance = {}%", saved.getSelfSufficiencyPercent());
         return toDto(saved);
+    }
+
+    /**
+     * Récupère la dernière optimisation persistée pour un jardin (sans recalcul).
+     *
+     * @return DTO du dernier résultat, ou {@link Optional#empty()} si aucun résultat n'existe
+     * @throws NoSuchElementException si le jardin n'existe pas ou n'appartient pas à l'utilisateur
+     */
+    @Transactional(readOnly = true)
+    public Optional<OptimizationResultDto> findLatest(Long gardenProfileId, String userEmail) {
+        GardenProfile garden = gardenProfileRepository.findByIdWithDetails(gardenProfileId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Profil jardin introuvable : id=" + gardenProfileId));
+
+        if (!garden.getUser().getEmail().equals(userEmail)) {
+            throw new NoSuchElementException("Profil jardin introuvable : id=" + gardenProfileId);
+        }
+
+        List<OptimizationResult> results = optimizationResultRepository
+                .findByGardenProfileId(gardenProfileId);
+        if (results.isEmpty()) {
+            return Optional.empty();
+        }
+        // Recharge avec allocations + crop pour éviter LazyInitializationException
+        OptimizationResult latest = optimizationResultRepository
+                .findByIdWithAllocations(results.get(0).getId())
+                .orElseThrow();
+        return Optional.of(toDto(latest));
+    }
+
+    /**
+     * Retourne toutes les optimisations pour un jardin, triées de la plus récente à la plus ancienne.
+     *
+     * @throws NoSuchElementException si le jardin n'existe pas ou n'appartient pas à l'utilisateur
+     */
+    @Transactional(readOnly = true)
+    public List<OptimizationResultDto> findAll(Long gardenProfileId, String userEmail) {
+        GardenProfile garden = gardenProfileRepository.findByIdWithDetails(gardenProfileId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Profil jardin introuvable : id=" + gardenProfileId));
+
+        if (!garden.getUser().getEmail().equals(userEmail)) {
+            throw new NoSuchElementException("Profil jardin introuvable : id=" + gardenProfileId);
+        }
+
+        return optimizationResultRepository.findByGardenProfileId(gardenProfileId).stream()
+                .map(r -> optimizationResultRepository.findByIdWithAllocations(r.getId()).orElseThrow())
+                .map(this::toDto)
+                .toList();
     }
 
     // -------------------------------------------------------------------------
