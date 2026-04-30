@@ -1,10 +1,12 @@
 package com.potagerai.controller;
 
 import com.potagerai.dto.optimization.OptimizationResultDto;
+import com.potagerai.dto.optimization.OptimizeRequestDto;
 import com.potagerai.service.GardenOptimizerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +46,12 @@ public class OptimizationController {
     @PostMapping("/{id}/optimize")
     public ResponseEntity<OptimizationResultDto> optimize(
             @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody(required = false) OptimizeRequestDto request) {
 
-        OptimizationResultDto result = gardenOptimizerService.optimize(id, userDetails.getUsername());
+        List<Long> selectedCropIds = (request != null) ? request.selectedCropIds() : null;
+        OptimizationResultDto result = gardenOptimizerService.optimize(
+                id, userDetails.getUsername(), selectedCropIds);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 

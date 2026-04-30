@@ -108,6 +108,99 @@
   mat-icon { color: #f57f17; }
 }
 
+.season-field {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 20px;
+}
+
+/* Grille de sélection des cultures */
+.crop-picker {
+  border: 1px solid #c8e6c9;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f1f8e9;
+    border-bottom: 1px solid #c8e6c9;
+    font-size: 0.88rem;
+    color: #33691e;
+  }
+
+  &__count {
+    em { color: #888; font-style: italic; }
+    strong { color: #388e3c; }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+
+    button {
+      font-size: 0.78rem;
+      padding: 0 10px;
+      height: 30px;
+      line-height: 30px;
+      border-color: #a5d6a7;
+      color: #388e3c;
+    }
+  }
+}
+
+.crop-loading {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.crop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px;
+}
+
+.crop-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1.5px solid #c8e6c9;
+  border-radius: 20px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: #333;
+  transition: all 0.15s ease;
+  user-select: none;
+
+  &:hover {
+    background: #e8f5e9;
+    border-color: #81c784;
+  }
+
+  &--selected {
+    background: #388e3c;
+    border-color: #388e3c;
+    color: #fff;
+
+    &:hover {
+      background: #2e7d32;
+    }
+  }
+
+  &__name { font-weight: 500; }
+  &__tag  { font-size: 0.8em; }
+  &__tag--frost { opacity: 0.9; }
+}
+
 .action-row {
   margin-top: 24px;
   text-align: center;

@@ -94,17 +94,24 @@ public class GardenOptimizerService {
     // Point d'entrée principal
     // -------------------------------------------------------------------------
 
+    @Transactional
+    public OptimizationResultDto optimize(Long gardenProfileId, String userEmail) {
+        return optimize(gardenProfileId, userEmail, null);
+    }
+
     /**
      * Lance l'optimisation LP pour le jardin identifié et persiste le résultat.
      *
      * @param gardenProfileId identifiant du profil jardin
      * @param userEmail       email de l'utilisateur authentifié (contrôle d'accès)
+     * @param selectedCropIds liste d'IDs de cultures à inclure (null ou vide = toutes)
      * @return DTO du résultat avec les allocations par culture
      * @throws NoSuchElementException       si le jardin n'existe pas ou n'appartient pas à l'utilisateur
      * @throws NoFeasibleSolutionException  si la surface est trop petite (HTTP 422)
      */
     @Transactional
-    public OptimizationResultDto optimize(Long gardenProfileId, String userEmail) {
+    public OptimizationResultDto optimize(Long gardenProfileId, String userEmail,
+                                          List<Long> selectedCropIds) {
 
         // --- Chargement et contrôle d'accès ---------------------------------
         GardenProfile garden = gardenProfileRepository.findByIdWithDetails(gardenProfileId)
@@ -126,7 +133,20 @@ public class GardenOptimizerService {
 
         // --- Données agronomiques -------------------------------------------
         List<Crop> allCrops = cropRepository.findAllWithNutritionalProfile();
-        List<CropData> cropDataList = buildCropDataList(allCrops, countryIso, climateZoneCode);
+
+        // Filtrage par sélection utilisateur si des IDs sont fournis
+        List<Crop> crops = (selectedCropIds == null || selectedCropIds.isEmpty())
+                ? allCrops
+                : allCrops.stream()
+                          .filter(c -> selectedCropIds.contains(c.getId()))
+                          .toList();
+
+        if (crops.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Aucune culture valide dans la sélection. Vérifiez les identifiants fournis.");
+        }
+
+        List<CropData> cropDataList = buildCropDataList(crops, countryIso, climateZoneCode);
 
         if (cropDataList.isEmpty()) {
             throw new IllegalStateException(

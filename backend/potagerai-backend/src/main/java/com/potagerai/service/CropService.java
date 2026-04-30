@@ -5,6 +5,7 @@ import com.potagerai.domain.crop.CropRepository;
 import com.potagerai.domain.crop.NutritionalProfile;
 import com.potagerai.dto.crop.CropDto;
 import com.potagerai.dto.crop.NutritionalProfileDto;
+import com.potagerai.dto.crop.Season;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,21 @@ public class CropService {
     @Transactional(readOnly = true)
     public List<CropDto> findAll() {
         return cropRepository.findAllWithNutritionalProfile()
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    /**
+     * Retourne les cultures dont la fenêtre de semis chevauche la saison donnée.
+     * Si {@code season} est {@code null} ou {@code TOUTE_ANNEE}, retourne toutes les cultures.
+     */
+    @Transactional(readOnly = true)
+    public List<CropDto> findBySeason(Season season) {
+        if (season == null || season == Season.TOUTE_ANNEE) {
+            return findAll();
+        }
+        return cropRepository.findAvailableInSeason(season.monthStart, season.monthEnd, season.wrapsAround)
                 .stream()
                 .map(this::toDto)
                 .toList();

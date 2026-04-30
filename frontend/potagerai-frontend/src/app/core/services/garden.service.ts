@@ -22,8 +22,11 @@ export class GardenService {
     return this.http.get<GardenProfile>(`${this.baseUrl}/${id}`);
   }
 
-  optimize(id: number): Observable<OptimizationResult> {
-    return this.http.post<OptimizationResult>(`${this.baseUrl}/${id}/optimize`, {});
+  optimize(id: number, selectedCropIds?: number[]): Observable<OptimizationResult> {
+    const body = selectedCropIds && selectedCropIds.length > 0
+      ? { selectedCropIds }
+      : {};
+    return this.http.post<OptimizationResult>(`${this.baseUrl}/${id}/optimize`, body);
   }
 
   /** Récupère le dernier résultat d'optimisation persisté pour un jardin (sans recalcul). */

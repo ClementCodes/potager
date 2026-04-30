@@ -103,6 +103,73 @@
         </div>
       }
 
+      <!-- ÉTAPE 3 : Saison + sélection des cultures -->
+      <div class="form-section">
+        <h2 class="section-title">
+          <mat-icon>eco</mat-icon>
+          Vos cultures
+        </h2>
+
+        <!-- Sélecteur de saison -->
+        <mat-form-field appearance="outline" class="season-field">
+          <mat-label>Saison de plantation</mat-label>
+          <mat-select formControlName="season">
+            @for (s of seasonOptions; track s.value) {
+              <mat-option [value]="s.value">{{ s.icon }} {{ s.label }}</mat-option>
+            }
+          </mat-select>
+          <mat-hint>Filtre les cultures disponibles selon la période de semis</mat-hint>
+        </mat-form-field>
+
+        <!-- Liste de sélection des cultures -->
+        <div class="crop-picker">
+          <div class="crop-picker__header">
+            <span class="crop-picker__count">
+              @if (loadingCrops) {
+                Chargement…
+              } @else {
+                {{ availableCrops.length }} culture{{ availableCrops.length > 1 ? 's' : '' }} disponible{{ availableCrops.length > 1 ? 's' : '' }}
+                @if (selectedCropIds.size > 0) {
+                  — <strong>{{ selectedCropIds.size }} sélectionnée{{ selectedCropIds.size > 1 ? 's' : '' }}</strong>
+                } @else {
+                  — <em>toutes incluses par défaut</em>
+                }
+              }
+            </span>
+            <div class="crop-picker__actions">
+              <button type="button" mat-stroked-button (click)="selectAll()">Tout sélectionner</button>
+              <button type="button" mat-stroked-button (click)="clearAll()">Réinitialiser</button>
+            </div>
+          </div>
+
+          @if (loadingCrops) {
+            <div class="crop-loading">
+              <mat-spinner diameter="24"></mat-spinner>
+            </div>
+          } @else {
+            <div class="crop-grid">
+              @for (crop of availableCrops; track crop.id) {
+                <button
+                  type="button"
+                  class="crop-chip"
+                  [class.crop-chip--selected]="selectedCropIds.has(crop.id)"
+                  (click)="toggleCrop(crop.id)"
+                  [attr.aria-pressed]="selectedCropIds.has(crop.id)"
+                >
+                  <span class="crop-chip__name">{{ crop.commonName }}</span>
+                  @if (crop.frostSensitive) {
+                    <span class="crop-chip__tag crop-chip__tag--frost" title="Sensible au gel">🌡️</span>
+                  }
+                  @if (crop.storageMonths && crop.storageMonths >= 3) {
+                    <span class="crop-chip__tag" title="Bonne conservation">📦</span>
+                  }
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
       @if (optimizationError) {
         <div class="optimization-error">
           <mat-icon>warning</mat-icon>

@@ -1,8 +1,10 @@
 package com.potagerai.controller;
 
 import com.potagerai.dto.crop.CropDto;
+import com.potagerai.dto.crop.Season;
 import com.potagerai.service.CropService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +16,9 @@ import java.util.List;
 /**
  * Endpoints cultures (lecture seule — données seed).
  *
- * GET /api/crops        → liste toutes les cultures + profil nutritionnel
- * GET /api/crops/{id}   → détail d'une culture
+ * GET /api/crops           → liste toutes les cultures
+ * GET /api/crops?season=ETE → filtre par saison de semis
+ * GET /api/crops/{id}      → détail d'une culture
  */
 @RestController
 @RequestMapping("/api/crops")
@@ -26,10 +29,16 @@ public class CropController {
 
     private final CropService cropService;
 
-    @Operation(summary = "Lister les cultures", description = "Retourne les 14 cultures avec leur profil nutritionnel.")
+    @Operation(
+        summary = "Lister les cultures",
+        description = "Retourne les cultures disponibles, filtrées optionnellement par saison de semis. " +
+                      "Valeurs : `PRINTEMPS`, `ETE`, `AUTOMNE`, `HIVER`, `TOUTE_ANNEE` (défaut)."
+    )
     @GetMapping
-    public ResponseEntity<List<CropDto>> findAll() {
-        return ResponseEntity.ok(cropService.findAll());
+    public ResponseEntity<List<CropDto>> findAll(
+            @Parameter(description = "Saison de semis (optionnel)", example = "ETE")
+            @RequestParam(required = false) Season season) {
+        return ResponseEntity.ok(cropService.findBySeason(season));
     }
 
     @Operation(summary = "Détail d'une culture")
