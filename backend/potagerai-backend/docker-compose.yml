@@ -1,0 +1,40 @@
+services:
+
+  # PostgreSQL 16
+  postgres:
+    image: postgres:16-alpine
+    container_name: potagerai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: potagerai
+      POSTGRES_USER: potagerai_user
+      POSTGRES_PASSWORD: potagerai_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - potagerai_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U potagerai_user -d potagerai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin (interface web BDD — accès : http://localhost:5050)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: potagerai-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@potagerai.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - potagerai_pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  potagerai_postgres_data:
+  potagerai_pgadmin_data:
