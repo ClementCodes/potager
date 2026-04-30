@@ -5,14 +5,51 @@
 
 ---
 
-## [Unreleased] — Sprint 1 en cours
+## [Unreleased] — Sprint 2 à planifier
 
-### À venir
-- Initialisation projet Spring Boot + Maven
-- Schema BDD + migrations Flyway
-- Solveur LP Apache Commons Math
-- API REST : Auth + Garden + Optimize
-- Frontend Angular 18 initial
+### À venir (Phase 1 — complétion)
+- `docker-compose.yml` + Dockerfile backend/frontend
+- Tests frontend Angular (`.spec.ts` services + composants)
+- Page historique jardins
+- Export PDF du plan
+
+### À venir (Phase 2 — Internationalisation)
+- Pipeline ETL FAOSTAT
+- Classification Köppen-Geiger (GPS → zone climatique)
+- i18n Angular (FR / EN / ES)
+- Migration solveur OR-Tools Google GLOP
+
+---
+
+## [0.2.0] — 30 avril 2026 — Sprint 1 complet
+
+### Ajouté — Backend Java / Spring Boot 3.3
+- `pom.xml` Maven : Spring Boot 3.3, JPA, PostgreSQL, Flyway, Security, Commons Math 3.6.1, JJWT 0.12.6, Lombok, SpringDoc
+- Migrations Flyway : `V1__init_schema.sql` (10 tables), `V2__seed_france_data.sql` (14 cultures, 4 zones FR)
+- Entités JPA : `User`, `Country`, `ClimateZone`, `Crop`, `NutritionalProfile`, `YieldData`, `ConsumptionData`, `GardenProfile`, `OptimizationResult`, `PlotAllocation`
+- Sécurité JWT stateless HS256 : `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`
+- Auth : `POST /api/v1/auth/register`, `POST /api/v1/auth/login` (BCrypt)
+- Cultures : `GET /api/v1/crops`, `GET /api/v1/crops/{id}`
+- Jardin : `POST /api/v1/gardens`, `GET /api/v1/gardens`, `GET /api/v1/gardens/{id}`
+- **Cœur métier** : `GardenOptimizerService` — solveur LP SimplexSolver (C1 surface, C2 calories, C3 anti-monoculture)
+- Optimisation : `POST /api/v1/gardens/{id}/optimize` → `OptimizationResultDto` ou 422 surface insuffisante
+- `ClimateAdjustmentService` : multiplicateurs FR-MED=1.2, FR-OCC=1.0, FR-CON=0.85, FR-MON=0.65
+- `GlobalExceptionHandler` : 400/401/404/422/500 structurés en `ApiError`
+- Tests : `GardenOptimizerServiceTest`, `AuthControllerTest`, `CropControllerTest`
+- Swagger : accessible sur `http://localhost:8080/swagger-ui.html`
+
+### Ajouté — Frontend Angular 18 SPA
+- Angular 18 standalone, SCSS, routing lazy-loaded
+- Angular Material 18 (thème indigo-pink), NgRx 18, D3.js v7, Chart.js v4
+- Composants : `LoginComponent`, `RegisterComponent`, `GardenFormComponent`, `GardenResultComponent`, `CropListComponent`
+- Tous les composants respectent la convention `templateUrl` / `styleUrl` (fichiers `.ts` / `.html` / `.scss` séparés)
+- `AuthGuard`, `AuthInterceptor` JWT, `AuthService`, `GardenService`, `CropService`
+- Treemap D3.js dans `GardenResultComponent` (surfaces proportionnelles, couleur = score ANDI)
+- `inject()` function pour toutes les injections de dépendances
+
+### Décisions
+- JWT secret injecté via variable d'environnement `JWT_SECRET` (fallback dev uniquement)
+- `.env` dans `.gitignore` — ne jamais committer les secrets de production
 
 ---
 

@@ -4,7 +4,7 @@
 
 **Stack :** Java 21 · Spring Boot 3.3 · Angular 18 · PostgreSQL 16  
 **Solveur :** Apache Commons Math 3.6.1 (Phase 1) → Google OR-Tools GLOP (Phase 2+)  
-**Statut :** 🟡 En cours de développement — Phase 1 MVP France
+**Statut :** ✅ Sprint 1 terminé — Phase 1 MVP France prête à lancer
 
 ---
 
@@ -50,34 +50,44 @@ PotagerAI/
 
 ---
 
-## Lancement rapide (quand le code sera généré)
+## Lancement rapide
 
-### Prérequis
-- Java 21 JDK
-- Node.js 20 LTS + npm
-- Docker Desktop (pour PostgreSQL en dev)
-- Maven 3.9+
-- Angular CLI 18 (`npm install -g @angular/cli@18`)
+### Prérequis installés
+- ✅ Java 21 (Temurin) — `C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot`
+- ✅ Maven 3.9.8 — `C:\Users\cdominique\AppData\Local\Maven`
+- ✅ Node.js 24 + Angular CLI 18
+- ⚠️ Docker Desktop — **à installer en admin** : [docker.com](https://www.docker.com/products/docker-desktop/)
 
-### Backend
-```bash
-cd backend/potagerai-backend
-docker compose up -d          # Démarre PostgreSQL
-mvn spring-boot:run           # Démarre l'API sur :8080
+### Lancer l'appli (dans 3 terminaux PowerShell)
+
+```powershell
+# Toujours faire en premier dans chaque terminal :
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot"
 ```
 
-### Frontend
-```bash
-cd frontend/potagerai-frontend
-npm install
-ng serve                      # Démarre l'UI sur :4200
+```powershell
+# Terminal 1 — BDD PostgreSQL
+cd "c:\Users\cdominique\Documents\Potager\backend"
+docker compose up -d
+```
+
+```powershell
+# Terminal 2 — Backend Spring Boot (port 8080)
+cd "c:\Users\cdominique\Documents\Potager\backend\potagerai-backend"
+& "$env:LOCALAPPDATA\Maven\bin\mvn.cmd" spring-boot:run
+```
+
+```powershell
+# Terminal 3 — Frontend Angular (port 4200)
+cd "c:\Users\cdominique\Documents\Potager\frontend\potagerai-frontend"
+ng serve
 ```
 
 ### Accès
+- UI : http://localhost:4200
 - API : http://localhost:8080/api/v1
-- UI  : http://localhost:4200
 - Swagger : http://localhost:8080/swagger-ui.html
-- Health : http://localhost:8080/actuator/health
 
 ---
 
