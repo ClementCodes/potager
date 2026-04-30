@@ -41,6 +41,18 @@ public class Crop {
     @Column(name = "plant_spacing_m2", precision = 6, scale = 4)
     private BigDecimal plantSpacingM2;
 
+    @Column(name = "storage_months")
+    private Integer storageMonths;
+
+    @Column(name = "frost_sensitive")
+    private Boolean frostSensitive;
+
+    @Column(name = "sowing_month_min")
+    private Integer sowingMonthMin;
+
+    @Column(name = "sowing_month_max")
+    private Integer sowingMonthMax;
+
     @OneToOne(mappedBy = "crop", fetch = FetchType.LAZY)
     private NutritionalProfile nutritionalProfile;
 }

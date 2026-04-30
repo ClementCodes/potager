@@ -54,6 +54,11 @@ public class CropService {
                 crop.getRootDepthCm(),
                 crop.getGrowingDaysMin(),
                 crop.getGrowingDaysMax(),
+                crop.getPlantSpacingM2(),
+                crop.getStorageMonths(),
+                crop.getFrostSensitive(),
+                crop.getSowingMonthMin(),
+                crop.getSowingMonthMax(),
                 nutritionDto);
     }
 }

@@ -10,5 +10,10 @@ public record CropDto(
     BigDecimal rootDepthCm,
     Integer growingDaysMin,
     Integer growingDaysMax,
+    BigDecimal plantSpacingM2,
+    Integer storageMonths,
+    Boolean frostSensitive,
+    Integer sowingMonthMin,
+    Integer sowingMonthMax,
     NutritionalProfileDto nutritionalProfile
 ) {}

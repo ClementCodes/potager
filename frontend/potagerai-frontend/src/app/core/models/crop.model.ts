@@ -15,5 +15,10 @@ export interface Crop {
   rootDepthCm: number;
   growingDaysMin: number;
   growingDaysMax: number;
+  plantSpacingM2: number | null;
+  storageMonths: number | null;
+  frostSensitive: boolean | null;
+  sowingMonthMin: number | null;
+  sowingMonthMax: number | null;
   nutritionalProfile: NutritionalProfile | null;
 }

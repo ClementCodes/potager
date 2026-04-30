@@ -12,14 +12,17 @@ import { OptimizationResult, PlotAllocation } from "../../../core/models/optimiz
 import * as d3 from "d3";
 
 const FAMILY_EMOJI: Record<string, string> = {
-  Solanaceae:     "🍅",
-  Cucurbitaceae:  "🥒",
-  Apiaceae:       "🥕",
-  Fabaceae:       "🫘",
-  Amaranthaceae:  "🌿",
-  Amaryllidaceae: "🧅",
-  Asteraceae:     "🥬",
-  Brassicaceae:   "🥦",
+  Solanaceae:      "🍅",
+  Cucurbitaceae:   "🥒",
+  Apiaceae:        "🥕",
+  Fabaceae:        "🫘",
+  Amaranthaceae:   "🌿",
+  Amaryllidaceae:  "🧅",
+  Asteraceae:      "🥬",
+  Brassicaceae:    "🥦",
+  Poaceae:         "🌽",
+  Convolvulaceae:  "🍠",
+  Caprifoliaceae:  "🥗",
 };
 
 @Component({
