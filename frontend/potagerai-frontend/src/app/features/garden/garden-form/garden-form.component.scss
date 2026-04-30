@@ -39,6 +39,46 @@
   }
 }
 
+.optimization-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: #fff3e0;
+  border: 1px solid #ff9800;
+  border-radius: 8px;
+  color: #5d4037;
+
+  mat-icon {
+    color: #e65100;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    flex: 1;
+
+    strong { color: #bf360c; }
+
+    p {
+      margin: 4px 0 8px;
+      line-height: 1.5;
+    }
+
+    ul {
+      margin: 4px 0 0;
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    .needed-surface {
+      font-size: 1.1em;
+      color: #e65100;
+    }
+  }
+}
+
 .spinner-inline {
   display: inline-block;
   margin-right: 8px;

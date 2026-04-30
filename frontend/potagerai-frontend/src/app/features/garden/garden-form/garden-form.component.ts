@@ -1,4 +1,5 @@
 ﻿import { Component, inject, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
@@ -18,6 +19,7 @@ import { CreateGardenRequest } from "../../../core/models/garden.model";
   selector: "app-garden-form",
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     MatButtonModule, MatSnackBarModule, MatProgressSpinnerModule, MatIconModule
@@ -41,6 +43,12 @@ export class GardenFormComponent implements OnInit {
   });
 
   loading = false;
+  optimizationError: {
+    requiredSurfaceM2: number;
+    currentSurfaceM2: number;
+    persons: number;
+    zoneName: string;
+  } | null = null;
 
   ngOnInit(): void {
     this.climateZoneService.findAll().subscribe({
@@ -52,6 +60,7 @@ export class GardenFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) return;
     this.loading = true;
+    this.optimizationError = null;
 
     const req: CreateGardenRequest = {
       totalSurfaceM2:  this.form.value.totalSurfaceM2!,
@@ -67,13 +76,21 @@ export class GardenFormComponent implements OnInit {
           error: (err) => {
             this.loading = false;
             if (err.status === 422) {
-              const needed = err.error?.requiredSurfaceM2;
-              const msg = needed
-                ? "Surface insuffisante. Il vous faut au moins " + needed.toFixed(0) + " m2."
-                : "Aucune solution realisable pour ces parametres.";
-              this.snackBar.open(msg, "Fermer", { duration: 6000, panelClass: "snack-error" });
+              const needed: number = err.error?.requiredSurfaceM2;
+              const zoneName = this.climateZones.find(
+                z => z.code === this.form.value.climateZoneCode
+              )?.name ?? 'cette zone';
+              this.optimizationError = {
+                requiredSurfaceM2: needed,
+                currentSurfaceM2: this.form.value.totalSurfaceM2 ?? 0,
+                persons: this.form.value.householdSize ?? 1,
+                zoneName
+              };
             } else {
-              this.snackBar.open("Erreur lors de l optimisation", "Fermer", { duration: 4000 });
+              this.snackBar.open(
+                "Une erreur est survenue lors de l'optimisation. Réessayez.",
+                "Fermer", { duration: 5000 }
+              );
             }
           }
         });

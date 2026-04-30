@@ -49,6 +49,29 @@
 
       </div>
 
+      @if (optimizationError) {
+        <div class="optimization-error">
+          <mat-icon>warning</mat-icon>
+          <div class="optimization-error__body">
+            <strong>Surface insuffisante pour atteindre l'autonomie alimentaire</strong>
+            <p>
+              Votre jardin de <strong>{{ optimizationError.currentSurfaceM2 }} m²</strong>
+              ne permet pas de nourrir <strong>{{ optimizationError.persons }} personne{{ optimizationError.persons > 1 ? 's' : '' }}</strong>
+              en <strong>{{ optimizationError.zoneName }}</strong> (2&nbsp;500 kcal/pers/jour).
+            </p>
+            <p>
+              Surface minimale calculée par l'algorithme :
+              <strong class="needed-surface">{{ optimizationError.requiredSurfaceM2 | number }} m²</strong>
+            </p>
+            <ul>
+              <li>Augmentez la surface à au moins <strong>{{ optimizationError.requiredSurfaceM2 | number }} m²</strong></li>
+              <li>Ou réduisez le nombre de personnes</li>
+              <li>Ou choisissez une zone climatique avec un meilleur rendement (ex. Méditerranéen ×1.20)</li>
+            </ul>
+          </div>
+        </div>
+      }
+
       <div class="action-row">
         <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
           @if (loading) {

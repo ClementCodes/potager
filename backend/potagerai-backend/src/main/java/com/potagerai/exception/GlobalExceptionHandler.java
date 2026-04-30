@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -102,17 +103,18 @@ public class GlobalExceptionHandler {
     // 422 — Solution non faisable (solveur LP — surface insuffisante)
     // -------------------------------------------------------------------------
     @ExceptionHandler(NoFeasibleSolutionException.class)
-    public ResponseEntity<ApiError> handleNoFeasibleSolution(
+    public ResponseEntity<Map<String, Object>> handleNoFeasibleSolution(
             NoFeasibleSolutionException ex, HttpServletRequest request) {
 
-        List<String> details = List.of(
-                "Surface disponible insuffisante pour atteindre l'autonomie calorique cible.",
-                "Surface minimale requise : " + ex.getRequiredSurfaceM2() + " m²"
-        );
-
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
-                ApiError.of(422, "Solution impossible", ex.getMessage(),
-                        request.getRequestURI(), details));
+        long needed = (long) Math.ceil(ex.getRequiredSurfaceM2());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of(
+                "status", 422,
+                "error", "Surface insuffisante",
+                "message", String.format(
+                        "Il vous faut au moins %d m² pour atteindre l'autonomie calorique.", needed),
+                "requiredSurfaceM2", needed,
+                "path", request.getRequestURI()
+        ));
     }
 
     // -------------------------------------------------------------------------
