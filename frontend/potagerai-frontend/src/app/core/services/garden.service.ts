@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { GardenProfile, CreateGardenRequest } from '../models/garden.model';
+import { GardenProfile, CreateGardenRequest, SurfaceEstimate } from '../models/garden.model';
 import { OptimizationResult } from '../models/optimization.model';
 import { environment } from '../../../environments/environment';
 
@@ -29,5 +29,16 @@ export class GardenService {
   /** Récupère le dernier résultat d'optimisation persisté pour un jardin (sans recalcul). */
   getLatestOptimization(gardenId: number): Observable<OptimizationResult> {
     return this.http.get<OptimizationResult>(`${this.baseUrl}/${gardenId}/optimization`);
+  }
+
+  /**
+   * Estime la surface nécessaire pour l'autosuffisance calorique (endpoint public).
+   * Appelé avant la création du jardin pour orienter l'utilisateur.
+   */
+  estimateSurface(householdSize: number, climateZoneCode: string): Observable<SurfaceEstimate> {
+    return this.http.get<SurfaceEstimate>(
+      `${environment.apiUrl}/v1/surface-estimate`,
+      { params: { householdSize: householdSize.toString(), climateZoneCode } }
+    );
   }
 }

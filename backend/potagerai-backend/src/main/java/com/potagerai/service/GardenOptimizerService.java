@@ -1,5 +1,7 @@
 package com.potagerai.service;
 
+import com.potagerai.domain.climate.ClimateZone;
+import com.potagerai.domain.climate.ClimateZoneRepository;
 import com.potagerai.domain.crop.Crop;
 import com.potagerai.domain.crop.ConsumptionDataRepository;
 import com.potagerai.domain.crop.CropRepository;
@@ -10,6 +12,7 @@ import com.potagerai.domain.garden.GardenProfileRepository;
 import com.potagerai.domain.optimization.OptimizationResult;
 import com.potagerai.domain.optimization.OptimizationResultRepository;
 import com.potagerai.domain.optimization.PlotAllocation;
+import com.potagerai.dto.estimate.SurfaceEstimateDto;
 import com.potagerai.dto.optimization.OptimizationResultDto;
 import com.potagerai.dto.optimization.PlotAllocationDto;
 import com.potagerai.exception.NoFeasibleSolutionException;
@@ -83,6 +86,7 @@ public class GardenOptimizerService {
     private final YieldDataRepository          yieldDataRepository;
     private final ConsumptionDataRepository    consumptionDataRepository;
     private final ClimateAdjustmentService     climateAdjustmentService;
+    private final ClimateZoneRepository        climateZoneRepository;
     private final OptimizationResultRepository optimizationResultRepository;
     private final GardenProfileRepository      gardenProfileRepository;
 
@@ -189,6 +193,62 @@ public class GardenOptimizerService {
                 .map(r -> optimizationResultRepository.findByIdWithAllocations(r.getId()).orElseThrow())
                 .map(this::toDto)
                 .toList();
+    }
+
+    // -------------------------------------------------------------------------
+    // Estimation de surface (endpoint public, avant création du jardin)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Calcule la surface minimale requise pour l'autosuffisance calorique d'un foyer.
+     *
+     * <p>Formule (identique à celle du 422 handler) :
+     * <pre>
+     *   T = householdSize × 2500 × 365   (kcal cible annuelle)
+     *   maxKcalPerM2 = max_i(Y_i × Cal_i)   (meilleure culture ajustée pour la zone)
+     *   S_min = T / (0.30 × maxKcalPerM2)   (contrainte anti-monoculture 30%)
+     * </pre>
+     *
+     * @param householdSize   nombre de personnes à nourrir (≥ 1)
+     * @param climateZoneCode code de la zone climatique (ex. "FR-OCC")
+     * @return estimation de surface arrondie au m² supérieur
+     * @throws IllegalArgumentException si la zone est inconnue ou si aucune donnée agronomique n'est disponible
+     */
+    @Transactional(readOnly = true)
+    public SurfaceEstimateDto estimateSurface(int householdSize, String climateZoneCode) {
+        ClimateZone zone = climateZoneRepository.findById(climateZoneCode)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Zone climatique inconnue : " + climateZoneCode));
+
+        double calorieTarget = householdSize * DAILY_KCAL_PER_PERSON * DAYS_PER_YEAR;
+
+        List<Crop> allCrops = cropRepository.findAllWithNutritionalProfile();
+        List<CropData> cropDataList = buildCropDataList(allCrops, "FRA", climateZoneCode);
+
+        if (cropDataList.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Aucune donnée agronomique disponible pour la zone " + climateZoneCode);
+        }
+
+        double maxKcalPerM2 = cropDataList.stream()
+                .mapToDouble(cd -> cd.adjustedYield() * cd.calDensityPerKg())
+                .max()
+                .orElse(1.0);
+
+        // Surface minimale compte tenu de la contrainte 30% max par culture
+        double requiredSurface = calorieTarget / (MONOCULTURE_MAX_RATIO * maxKcalPerM2);
+        long estimatedSurfaceM2 = (long) Math.ceil(requiredSurface);
+
+        log.info("Estimation surface : {} personnes, zone={} → {} m²",
+                householdSize, climateZoneCode, estimatedSurfaceM2);
+
+        return new SurfaceEstimateDto(
+                householdSize,
+                climateZoneCode,
+                zone.getName(),
+                estimatedSurfaceM2,
+                (long) calorieTarget
+        );
     }
 
     // -------------------------------------------------------------------------

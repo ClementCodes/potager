@@ -24,3 +24,11 @@ export interface ClimateZone {
   description: string;
   yieldMultiplier: number;
 }
+
+export interface SurfaceEstimate {
+  householdSize: number;
+  climateZoneCode: string;
+  climateZoneName: string;
+  estimatedSurfaceM2: number;
+  calorieTargetAnnual: number;
+}
