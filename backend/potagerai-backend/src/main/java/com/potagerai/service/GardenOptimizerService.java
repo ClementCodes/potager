@@ -360,9 +360,11 @@ public class GardenOptimizerService {
                 .map(pa -> new PlotAllocationDto(
                         pa.getCrop().getId(),
                         pa.getCrop().getCommonName(),
+                        pa.getCrop().getBotanicalFamily(),
                         pa.getAllocatedSurfaceM2(),
                         pa.getEstimatedYieldKg(),
-                        pa.getEstimatedCalories()))
+                        pa.getEstimatedCalories(),
+                        pa.getCrop().getPlantSpacingM2()))
                 .toList();
 
         return new OptimizationResultDto(

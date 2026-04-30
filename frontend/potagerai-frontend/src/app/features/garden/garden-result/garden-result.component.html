@@ -56,39 +56,60 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Detail par culture</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="table-wrapper">
-        <table class="alloc-table">
-          <thead>
-            <tr>
-              <th>Culture</th>
-              <th>Surface (m2)</th>
-              <th>% du jardin</th>
-              <th>kcal/an estimes</th>
-              <th>Score ANDI</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (a of result.plotAllocations; track a.cropId) {
-              <tr>
-                <td><strong>{{ a.cropName }}</strong></td>
-                <td>{{ a.allocatedSurfaceM2 | number:"1.1-1" }}</td>
-                <td>{{ getSurfacePercent(a) | number:"1.0-1" }}%</td>
-                <td>{{ a.estimatedCalories | number:"1.0-0" }}</td>
-                <td>
-                  <span class="andi-chip" [style.background]="andiColor(a.andiScore)">
-                    {{ a.andiScore | number:"1.0-0" }}
-                  </span>
-                </td>
-              </tr>
+  <div class="crops-section">
+    <h2>
+      <mat-icon>eco</mat-icon>
+      Votre plan de culture — {{ result.plotAllocations.length }} légumes sélectionnés
+    </h2>
+    <div class="crop-cards-grid">
+      @for (a of result.plotAllocations; track a.cropId) {
+        <div class="crop-card">
+          <div class="crop-card-header">
+            <span class="crop-emoji">{{ getEmoji(a) }}</span>
+            <div class="crop-header-info">
+              <div class="crop-name">{{ a.cropName }}</div>
+              <div class="crop-family">{{ a.botanicalFamily ?? 'Famille inconnue' }}</div>
+            </div>
+            <div class="andi-badge" [style.background]="getAndiColor(a.andiScore)">
+              <span class="andi-value">{{ a.andiScore | number:"1.0-0" }}</span>
+              <span>ANDI</span>
+            </div>
+          </div>
+
+          <div class="crop-card-body">
+            <div class="surface-bar-row">
+              <span>Part du jardin</span>
+              <span class="surface-value">{{ a.allocatedSurfaceM2 | number:"1.0-1" }} m²</span>
+            </div>
+            <mat-progress-bar
+              mode="determinate"
+              [value]="getSurfacePercent(a)"
+              color="primary">
+            </mat-progress-bar>
+
+            <div class="stats-row">
+              <div class="stat-item">
+                <div class="stat-value">{{ a.estimatedYieldKg | number:"1.0-0" }} kg</div>
+                <div class="stat-label">Rendement / an</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ a.estimatedCalories | number:"1.0-0" }}</div>
+                <div class="stat-label">kcal / an</div>
+              </div>
+            </div>
+
+            @if (getPlantCount(a); as nb) {
+              <div class="plants-highlight">
+                <mat-icon>grass</mat-icon>
+                <div class="plants-text">
+                  À planter : <strong>{{ nb }} {{ a.cropName | lowercase }}s</strong>
+                </div>
+              </div>
             }
-          </tbody>
-        </table>
-      </div>
-    </mat-card-content>
-  </mat-card>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
 }

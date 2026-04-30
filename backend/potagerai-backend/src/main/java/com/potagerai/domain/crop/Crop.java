@@ -38,6 +38,9 @@ public class Crop {
     @Column(name = "growing_days_max")
     private Integer growingDaysMax;
 
+    @Column(name = "plant_spacing_m2", precision = 6, scale = 4)
+    private BigDecimal plantSpacingM2;
+
     @OneToOne(mappedBy = "crop", fetch = FetchType.LAZY)
     private NutritionalProfile nutritionalProfile;
 }

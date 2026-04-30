@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
+﻿import { Component, OnInit, ElementRef, ViewChild, inject } from "@angular/core";
 import { CommonModule, DecimalPipe } from "@angular/common";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
@@ -11,6 +11,17 @@ import { GardenService } from "../../../core/services/garden.service";
 import { OptimizationResult, PlotAllocation } from "../../../core/models/optimization.model";
 import * as d3 from "d3";
 
+const FAMILY_EMOJI: Record<string, string> = {
+  Solanaceae:     "🍅",
+  Cucurbitaceae:  "🥒",
+  Apiaceae:       "🥕",
+  Fabaceae:       "🫘",
+  Amaranthaceae:  "🌿",
+  Amaryllidaceae: "🧅",
+  Asteraceae:     "🥬",
+  Brassicaceae:   "🥦",
+};
+
 @Component({
   selector: "app-garden-result",
   standalone: true,
@@ -22,13 +33,14 @@ import * as d3 from "d3";
   templateUrl: "./garden-result.component.html",
   styleUrl: "./garden-result.component.scss"
 })
-export class GardenResultComponent implements OnInit, AfterViewInit {
+export class GardenResultComponent implements OnInit {
   @ViewChild("treemap") treemapRef!: ElementRef<SVGElement>;
+
+  private route = inject(ActivatedRoute);
+  private gardenService = inject(GardenService);
 
   result: OptimizationResult | null = null;
   loading = true;
-
-  constructor(private route: ActivatedRoute, private gardenService: GardenService) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get("id"));
@@ -58,15 +70,29 @@ export class GardenResultComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {}
-
   getTotalSurface(): number {
-    return this.result?.plotAllocations.reduce((s: number, a: PlotAllocation) => s + a.allocatedSurfaceM2, 0) ?? 0;
+    return this.result?.plotAllocations.reduce((s, a) => s + a.allocatedSurfaceM2, 0) ?? 0;
   }
 
   getSurfacePercent(a: PlotAllocation): number {
     const total = this.getTotalSurface();
     return total > 0 ? (a.allocatedSurfaceM2 / total) * 100 : 0;
+  }
+
+  getPlantCount(a: PlotAllocation): number | null {
+    if (!a.plantSpacingM2 || a.plantSpacingM2 <= 0) return null;
+    return Math.floor(a.allocatedSurfaceM2 / a.plantSpacingM2);
+  }
+
+  getEmoji(a: PlotAllocation): string {
+    return FAMILY_EMOJI[a.botanicalFamily ?? ""] ?? "🌱";
+  }
+
+  getAndiColor(score: number): string {
+    // Gradient vert clair → vert foncé selon score ANDI (0–1000)
+    const t = Math.min(score / 1000, 1);
+    const lightness = Math.round(55 - t * 30);
+    return `hsl(120, 55%, ${lightness}%)`;
   }
 
   andiColor(score: number): string {

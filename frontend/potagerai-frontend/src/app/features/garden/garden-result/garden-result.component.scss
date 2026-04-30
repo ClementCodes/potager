@@ -15,6 +15,197 @@
   padding: 48px;
 }
 
+/* ─── KPIs ─────────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  text-align: center;
+
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2e7d32;
+  }
+
+  .kpi-label {
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+}
+
+/* ─── Treemap ─────────────────────────────────────────── */
+.treemap-card {
+  margin-bottom: 24px;
+}
+
+.treemap-svg {
+  width: 100%;
+  height: 480px;
+  display: block;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+
+  .legend-gradient {
+    flex: 1;
+    height: 12px;
+    background: linear-gradient(to right, #ffffcc, #006837);
+    border-radius: 4px;
+  }
+
+  .legend-label { color: #555; }
+}
+
+/* ─── Fiches culture ──────────────────────────────────── */
+.crops-section {
+  margin-bottom: 24px;
+
+  h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+  }
+}
+
+.crop-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.crop-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid #e0e0e0;
+  transition: box-shadow 0.2s;
+
+  &:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
+  .crop-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px 10px;
+    background: #f9fbe7;
+    border-bottom: 1px solid #e8f5e9;
+
+    .crop-emoji { font-size: 2rem; line-height: 1; }
+
+    .crop-header-info {
+      flex: 1;
+      min-width: 0;
+
+      .crop-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1b5e20;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .crop-family {
+        font-size: 0.75rem;
+        color: #757575;
+        font-style: italic;
+      }
+    }
+
+    .andi-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      min-width: 44px;
+      flex-shrink: 0;
+
+      .andi-value { font-size: 1rem; font-weight: 700; }
+    }
+  }
+
+  .crop-card-body {
+    padding: 12px 16px 14px;
+
+    .surface-bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+      color: #555;
+
+      .surface-value { font-weight: 600; color: #2e7d32; }
+    }
+
+    mat-progress-bar { margin-bottom: 12px; border-radius: 4px; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-item {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+
+      .stat-value {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .stat-label {
+        font-size: 0.68rem;
+        color: #888;
+        margin-top: 2px;
+      }
+    }
+
+    .plants-highlight {
+      margin-top: 10px;
+      background: #e8f5e9;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      mat-icon { color: #388e3c; font-size: 18px; width: 18px; height: 18px; }
+
+      .plants-text {
+        font-size: 0.85rem;
+        color: #2e7d32;
+        font-weight: 500;
+
+        strong { font-size: 1rem; }
+      }
+    }
+  }
+}
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
