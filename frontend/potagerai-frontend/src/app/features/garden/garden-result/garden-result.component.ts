@@ -87,6 +87,33 @@ export class GardenResultComponent implements OnInit {
     return Math.floor(a.allocatedSurfaceM2 / a.plantSpacingM2);
   }
 
+  /**
+   * Calcule un agencement en rangées (lignes × colonnes) pour le plan visuel.
+   * On suppose une parcelle quasi-carrée : cols ≈ √N, rows = ceil(N / cols).
+   * Plafonné à MAX_DISPLAY plants pour éviter de saturer le DOM.
+   */
+  getPlantLayout(a: PlotAllocation): { rows: number; cols: number; total: number; displayed: number } | null {
+    const total = this.getPlantCount(a);
+    if (total == null || total <= 0) return null;
+    const MAX_DISPLAY = 150;
+    const displayed = Math.min(total, MAX_DISPLAY);
+    const cols = Math.max(1, Math.round(Math.sqrt(displayed)));
+    const rows = Math.ceil(displayed / cols);
+    return { rows, cols, total, displayed };
+  }
+
+  /** Itérables pour @for dans le template (Angular 18 control flow). */
+  range(n: number): number[] {
+    return Array.from({ length: Math.max(0, n) }, (_, i) => i);
+  }
+
+  /** Hauteur visuelle d'une bande (en px) proportionnelle à la part de surface. */
+  getStripHeight(a: PlotAllocation): number {
+    const pct = this.getSurfacePercent(a);
+    // mini 60 px, max 220 px ; sinon proportionnel
+    return Math.max(60, Math.min(220, Math.round(pct * 8)));
+  }
+
   getEmoji(a: PlotAllocation): string {
     return FAMILY_EMOJI[a.botanicalFamily ?? ""] ?? "🌱";
   }
