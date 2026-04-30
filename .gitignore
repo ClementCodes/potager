@@ -1,0 +1,33 @@
+# Dépendances Java / Maven
+backend/potagerai-backend/target/
+backend/potagerai-backend/.mvn/
+*.jar
+*.war
+*.class
+
+# Dépendances Node / Angular
+frontend/potagerai-frontend/node_modules/
+frontend/potagerai-frontend/dist/
+frontend/potagerai-frontend/.angular/
+
+# Environnement & secrets
+.env
+.env.local
+application-prod.properties
+*-secret.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
